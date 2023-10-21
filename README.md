@@ -1,6 +1,6 @@
 # typing
 
-![犬](img/icon.png)
+![](icon.png)
 
 ---
 
