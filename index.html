@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アルファベットタイピング練習</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        #random-alphabet {
+            font-size: 36px;
+            margin-top: 20px;
+        }
+
+        #input-alphabet {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #message {
+            margin-top: 10px;
+            color: red;
+            font-size: 18px;
+        }
+
+        #start-text {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>アルファベットタイピング練習</h1>
+        <p>正解した回数: <span id="score">0</span></p>
+        <p id="random-alphabet"></p>
+        <input type="text" id="input-alphabet">
+        <p id="message"></p>
+        <p id="timer"></p>
+        <p id="start-text">スタート</p>
+    </div>
+    <script>
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+        const randomAlphabetElement = document.getElementById('random-alphabet');
+        const inputAlphabetElement = document.getElementById('input-alphabet');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const startTextElement = document.getElementById('start-text');
+
+        let score = 0;
+        let timerSeconds = 180;
+        let timerInterval;
+
+        function getRandomAlphabet() {
+            const randomIndex = Math.floor(Math.random() * alphabet.length);
+            return alphabet[randomIndex];
+        }
+
+        function displayRandomAlphabet() {
+            const randomChar = getRandomAlphabet();
+            randomAlphabetElement.textContent = randomChar;
+        }
+
+        function checkInput(event) {
+            const inputChar = event.key;
+            if (alphabet.includes(inputChar)) {
+                if (inputChar === randomAlphabetElement.textContent) {
+                    messageElement.textContent = '正解！';
+                    score++;
+                    scoreElement.textContent = score;
+                    displayRandomAlphabet();
+                    inputAlphabetElement.value = '';
+                } else {
+                    messageElement.textContent = '違います。もう一度試してみてください.';
+                }
+            }
+        }
+
+        inputAlphabetElement.addEventListener('keydown', checkInput);
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    inputAlphabetElement.setAttribute('disabled', 'disabled');
+                    randomAlphabetElement.textContent = '';
+                    messageElement.textContent = `あなたの正解した回数は ${score} 回です！`;
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function startGame() {
+            startTextElement.style.opacity = 0;
+            setTimeout(() => {
+                startTextElement.style.display = 'none';
+                startTimer();
+                displayRandomAlphabet();
+            }, 1000);
+        }
+
+        // ゲーム開始時に「スタート」を表示
+        setTimeout(() => {
+            startGame();
+        }, 1000);
+    </script>
+</body>
+</html>
